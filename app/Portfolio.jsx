@@ -30,7 +30,7 @@ export default function Portfolio() {
 
   return (
     <div className="bg-primary p-2 min-h-72">
-      <div className="grid grid-cols-3 bg-base-100 rounded-lg p-2 text-center not-sm:text-sm">
+      <div className="grid grid-cols-3 bg-gray-950 rounded-lg p-2 text-center not-sm:text-sm">
         <div>
           Total Investment <div>₹{investment(portfolioItems).toFixed(2)}</div>{" "}
         </div>
@@ -75,7 +75,7 @@ export default function Portfolio() {
             >
               <Link
                 href={`/stock-data/${item.symbol}`}
-                className="grid grid-cols-3 text-center not-sm:text-sm bg-base-100 p-2 rounded-lg cursor-pointer hover:bg-base-200 duration-300 active:scale-95 items-center"
+                className="grid grid-cols-3 text-center not-sm:text-sm bg-gray-950 p-2 rounded-lg cursor-pointer hover:bg-black duration-300 active:scale-95 items-center"
               >
                 <div>
                   {" "}
