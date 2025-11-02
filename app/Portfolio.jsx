@@ -32,10 +32,10 @@ export default function Portfolio() {
     <div className="bg-primary p-2 min-h-72">
       <div className="grid grid-cols-3 bg-base-100 rounded-lg p-2 text-center not-sm:text-sm">
         <div>
-          Total Investment <div>₹{investment(portfolioItems)}</div>{" "}
+          Total Investment <div>₹{investment(portfolioItems).toFixed(2)}</div>{" "}
         </div>
         <div>
-          Current Value <div>₹{currentvalue(portfolioItems)}</div>{" "}
+          Current Value <div>₹{currentvalue(portfolioItems).toFixed(2)}</div>{" "}
         </div>
         <div>
           Total Returns{" "}
@@ -84,7 +84,7 @@ export default function Portfolio() {
                   <div className="text-sm">Quantity: {item.quantity}</div>
                 </div>
                 <div>
-                  Invested <div>₹{item.price * item.quantity}</div>{" "}
+                  Invested <div>₹{(item.price * item.quantity).toFixed(2)}</div>{" "}
                 </div>
                 <div>
                   ROI{" "}
