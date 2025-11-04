@@ -7,9 +7,13 @@ import { GiGoldBar } from "react-icons/gi";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { auth, } from "../../firebase/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import Loading from "../Loading";
+import { useValues } from "@/contexts/contexts";
 
 const Icon = ({ Component, size = 30 }) => {
   return <Component size={size} />;
@@ -108,6 +112,7 @@ const SignupSection = ({ setloading }) => {
       try {
         setloading(true);
         await createUserWithEmailAndPassword(auth, email, password);
+
         toast.success("Signup success");
       } catch (e) {
         toast.error(e.message);
@@ -191,10 +196,7 @@ const SignupSection = ({ setloading }) => {
         )}
       </div>
       {/*............signup button...........*/}
-      <button
-        onClick={signup}
-        className="btn btn-primary w-60"
-      >
+      <button onClick={signup} className="btn btn-primary w-60">
         Signup
       </button>
       <div
@@ -209,7 +211,7 @@ const SignupSection = ({ setloading }) => {
 };
 
 function page() {
-  const [loading, setloading] = useState(false);
+  const {setviewLoder} = useValues();
   return (
     <div className="min-h-screen overflow-y-scroll bg-gray-900 flex justify-center flex-col gap-5 items-center bar-0 px-1 sm:px-3">
       <Header />
@@ -220,8 +222,7 @@ function page() {
         className="rounded-lg flex overflow-hidden not-sm:flex-col-reverse"
       >
         <SideSection />
-        <SignupSection setloading={setloading} />
-        {loading && <Loading />}
+        <SignupSection setloading={setviewLoder} />
       </motion.div>
     </div>
   );

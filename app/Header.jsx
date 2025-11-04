@@ -1,14 +1,12 @@
-import { useValues } from "@/contexts/contexts";
-import { motion } from "framer-motion";
-import { Menu, Moon, Sun } from "lucide-react";
-import Loading from "./Loading";
+import { AnimatePresence, motion } from "framer-motion";
+import { Bell, Menu, ShoppingCart, User } from "lucide-react";
+import Link from "next/link";
+import { listItems } from "@/data/data";
+import SideNav from "./SideNav";
 import { useState } from "react";
-import { toast } from "react-toastify";
-import { saveData } from "@/firebase/firebase";
 
-const Header = ({ onMenuClick, onLogoutClick, listItems }) => {
-  const { theme, settheme, user } = useValues();
-  const [loading, setloading] = useState(false);
+const Header = () => {
+  const [viewNav, setviewNav] = useState(false);
   return (
     <header className="flex px-3 h-14 items-center bg-primary gap-1">
       <motion.h1
@@ -42,45 +40,52 @@ const Header = ({ onMenuClick, onLogoutClick, listItems }) => {
         initial={{ opacity: 0, x: 40 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
-        onClick={onMenuClick}
         className="sm:hidden cursor-pointer hover:scale-105 active:scale-95"
+        onClick={() => setviewNav(true)}
       >
         <Menu size={27} />
       </motion.button>
-      <motion.button
-        initial={{ opacity: 0, x: 40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6 }}
-        whileHover={{ scale: 1.04 }}
-        whileTap={{ scale: 0.97 }}
-        onClick={async () => {
-          try {
-            setloading(true);
-            const newTheme = theme == "black" ? "dark" : "black";
-            await saveData(user.uid,"theme",{theme:newTheme});
-            settheme(newTheme);
-          } catch (err) {
-            toast.error(err.message);
-          } finally {
-            setloading(false);
-          }
-        }}
-        className="not-sm:hidden btn"
-      >
-        {theme === "black" ? <Moon /> : <Sun />}
-      </motion.button>
-      <motion.button
-        initial={{ opacity: 0, x: 40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6 }}
-        whileHover={{ scale: 1.04 }}
-        whileTap={{ scale: 0.97 }}
-        onClick={onLogoutClick}
-        className="not-sm:hidden btn"
-      >
-        Logout
-      </motion.button>
-      {loading && <Loading />}
+
+      <div className="flex gap-4 not-sm:hidden">
+        <motion.button
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.97 }}
+          className=" relative cursor-pointer hover:text-gray-300"
+        >
+          <Bell size={27} />
+          <span className="absolute top-0 right-0 flex justify-center text-xs items-center bg-red-500 h-4 w-4 rounded-full">
+            2
+          </span>
+        </motion.button>
+        <motion.button
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.97 }}
+          className=" cursor-pointer hover:text-gray-300"
+        >
+          <ShoppingCart size={27} />
+        </motion.button>
+        <motion.button
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.97 }}
+          className=" cursor-pointer hover:text-gray-300"
+        >
+          <Link href={"/profile"}>
+            <User size={27} />
+          </Link>
+        </motion.button>
+      </div>
+      <AnimatePresence>
+        {viewNav && <SideNav onCloseClick={() => setviewNav(false)} />}
+      </AnimatePresence>
     </header>
   );
 };

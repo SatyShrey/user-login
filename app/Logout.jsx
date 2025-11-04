@@ -1,25 +1,20 @@
 import { motion } from "framer-motion";
 import { signOut } from "firebase/auth";
 import { toast } from "react-toastify";
-import { useState } from "react";
 import { auth } from "@/firebase/firebase";
-import Loading from "./Loading";
 import { useValues } from "@/contexts/contexts";
 
-function Logout({ onClickCancel }) {
-  const [loading, setloading] = useState(false);
-  const {setuser}=useValues();
+function Logout() {
+  const {setuser, setviewLogout}=useValues();
 
   const logout = async () => {
     try {
-      setloading(true);
       await signOut(auth);
+      setviewLogout(false)
       setuser(null);
     } catch (e) {
       toast.error(e.message);
-    } finally {
-      setloading(false);
-    }
+    } 
   };
 
   return (
@@ -42,7 +37,7 @@ function Logout({ onClickCancel }) {
         </div>
         <div className="flex justify-end gap-2">
           <button
-            onClick={onClickCancel}
+            onClick={()=> setviewLogout(false)}
             className="w-36 btn text-white bg-gray-500 border-gray-500 hover:bg-gray-500/90"
           >
             Cancel
@@ -55,7 +50,6 @@ function Logout({ onClickCancel }) {
           </button>
         </div>
       </motion.div>
-      {loading && <Loading/>}
     </motion.div>
   );
 }

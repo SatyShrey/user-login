@@ -6,76 +6,44 @@ import { toast } from "react-toastify";
 
 function BuySell({ stock }) {
   const [quantity, setquantity] = useState(0);
-  const [loading, setloading] = useState(false);
-  const { user, portfolioItems, setportfolioItems, indianStocksArray } =
+  const { user, portfolioItems, setportfolioItems, indianStocksArray,setviewLoder } =
     useValues();
   const [isPortfolioItem, setisPortfolioItem] = useState(null);
   const [inputError, setinputError] = useState("");
 
   const handleBuy = async () => {
-    if (!quantity || quantity == 0 || quantity < 0) {
-      return toast.error("Please enter quantity");
-    }
-    const find = portfolioItems.find((item) => item.symbol === stock.symbol);
-    const totalShare = find ? find.quantity : 0;
-    const newTotalShare = parseInt(quantity) + totalShare;
-    const oldPrice = find ? find.price : 0;
-    const livePrice = indianStocksArray.find(
-      (a) => a.symbol == stock.symbol
-    ).price;
-    const averagePrice = (oldPrice + livePrice) / newTotalShare;
-    const newPortFolioArray = portfolioItems.filter(
-      (item) => item.symbol !== stock.symbol
-    );
-    const newDoc = { ...stock, quantity: newTotalShare, price: averagePrice };
-    try {
-      setloading(true);
-      await saveData(user.uid, "portfolio", {
-        portfolio: [...newPortFolioArray, newDoc],
-      });
-      setportfolioItems([...newPortFolioArray, newDoc]);
-      toast.success(
-        `${quantity} share of ${stock.symbol} added to your portfolio`
-      );
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setloading(false);
-    }
+    if(!quantity || quantity < 0){return toast.error("Please enter the quantity")}
+    try{
+      setviewLoder(true);
+     const currentQuantity= isPortfolioItem ? isPortfolioItem.quantity : 0 ;
+     const currentStateOfStock=indianStocksArray.find((a)=>a.symbol==stock.symbol);
+     const previousValue=isPortfolioItem ? (isPortfolioItem.price * isPortfolioItem.quantity) : 0 ;
+     const addedValue=quantity * currentStateOfStock.price;
+     const updatedQuantity=(quantity+currentQuantity)
+     const averagePrice=(previousValue+addedValue)/updatedQuantity;
+     const updatedItem={...stock,quantity:updatedQuantity,price:averagePrice}
+     const array=portfolioItems.filter(a=>a.symbol !== stock.symbol);
+     const updatedPortFolioItems=[...array,updatedItem];
+     await saveData(user.uid,'portfolio',{portfolio:updatedPortFolioItems}); 
+     setportfolioItems(updatedPortFolioItems)
+     toast.success(`${quantity} ${stock.symbol} added to your portfolio`);
+    }catch(error){toast.error(error.message)}finally{setviewLoder(false)}
   };
 
   const handleSell = async () => {
-    if (!quantity || quantity == 0 || quantity < 0) {
-      return toast.error("Please enter quantity");
-    }
-    if (!isPortfolioItem || isPortfolioItem.quantity < quantity) {
-      return toast.error(
-        `You have not ${quantity} share${quantity > 1 && "s"} of ${
-          stock.symbol
-        } to sell`
-      );
-    }
-    try {
-      setloading(true);
-      const newQuantity = isPortfolioItem.quantity - quantity;
-      const newDoc = { ...isPortfolioItem, quantity: newQuantity };
-      const removeItemAndMakeNew = portfolioItems.filter(
-        (f) => f.symbol !== isPortfolioItem.symbol
-      );
-      const newPortfolioArray =
-        newQuantity == 0
-          ? removeItemAndMakeNew
-          : [...removeItemAndMakeNew, newDoc];
-      await saveData(user.uid, "portfolio", { portfolio: newPortfolioArray });
-      setportfolioItems(newPortfolioArray);
-      toast.success(
-        `${quantity} ${quantity > 1 ? "shares": "share"} of ${stock.symbol} sold`
-      );
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setloading(false);
-    }
+ if(!quantity || quantity < 0){return toast.error("Please enter the quantity")}
+ if(!isPortfolioItem || isPortfolioItem.quantity < quantity){return toast.error('You have not '+quantity+" "+stock.symbol+" in your portfolio")}
+    try{
+      setviewLoder(true);
+     const currentQuantity= isPortfolioItem.quantity;
+     const updatedQuantity=currentQuantity - quantity
+     const updatedItem={...isPortfolioItem,quantity:updatedQuantity}
+     const array=portfolioItems.filter(a=>a.symbol !== stock.symbol);
+     const updatedPortFolioItems=updatedQuantity==0 ? array : [...array,updatedItem];
+     await saveData(user.uid,'portfolio',{portfolio:updatedPortFolioItems});
+     setportfolioItems(updatedPortFolioItems)
+     toast.success(`${quantity} ${stock.symbol} sold`);
+    }catch(error){toast.error(error.message)}finally{setviewLoder(false)}
   };
 
   useEffect(() => {
@@ -102,7 +70,7 @@ function BuySell({ stock }) {
           placeholder="Enter Quantity"
           className="h-10 rounded px-3 bg-base-100"
           onChange={(e) => {
-            const value = parseInt(e.target.value);
+            const value = parseFloat(e.target.value);
             setquantity(value);
             if (!value || value == 0 || value < 0) {
               setinputError("Please enter a valid amount");
@@ -120,7 +88,6 @@ function BuySell({ stock }) {
           Sell
         </button>
       </div>
-      {loading && <Loading />}
     </div>
   );
 }

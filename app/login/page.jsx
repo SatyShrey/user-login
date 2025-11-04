@@ -10,7 +10,6 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { auth, googleProvider, login } from "../../firebase/firebase";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
-import Loading from "../Loading";
 import { useValues } from "@/contexts/contexts";
 
 const Icon = ({ Component, size = 30 }) => {
@@ -82,14 +81,14 @@ const SideSection = () => {
   );
 };
 
-const LoginSection = ({ setloading }) => {
+const LoginSection = () => {
   const [inputType, setInputType] = useState("password");
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex = /^.{6,}$/;
   const route = useRouter();
-  const { setuser } = useValues();
+  const {setviewLoder,setuser} = useValues();
 
   const login = async () => {
     if (!email) {
@@ -99,7 +98,7 @@ const LoginSection = ({ setloading }) => {
       return toast.error("Enter password");
     }
     if (emailRegex.test(email) && passwordRegex.test(password)) {
-      setloading(true);
+      setviewLoder(true);
       try {
         const res=await signInWithEmailAndPassword(auth, email, password);
         setuser(res.user);
@@ -108,13 +107,13 @@ const LoginSection = ({ setloading }) => {
       } catch (e) {
         toast.error(e.message);
       } finally {
-        setloading(false);
+        setviewLoder(false);
       }
     }
   };
 
   const loginWithGoogle = async () => {
-    setloading(true);
+    setviewLoder(true);
     try {
       await signInWithPopup(auth, googleProvider);
       toast.success("Login success");
@@ -122,7 +121,7 @@ const LoginSection = ({ setloading }) => {
     } catch (e) {
       toast.error(e.message);
     } finally {
-      setloading(false);
+      setviewLoder(false);
     }
   };
 
@@ -197,7 +196,6 @@ const LoginSection = ({ setloading }) => {
 };
 
 function page() {
-  const [loading, setloading] = useState(false);
   return (
     <div className="min-h-screen overflow-y-scroll bg-gray-900 flex justify-center flex-col gap-5 items-center bar-0 px-1 sm:px-3">
       <Header />
@@ -208,8 +206,7 @@ function page() {
         className="rounded-lg flex overflow-hidden not-sm:flex-col-reverse"
       >
         <SideSection />
-        <LoginSection setloading={setloading} />
-        {loading && <Loading />}
+        <LoginSection />
       </motion.div>
     </div>
   );

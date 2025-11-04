@@ -15,7 +15,7 @@ const StockPriceCard = ({ stock }) => {
       >
         <h2>
           <div className="md:text-lg font-bold">{stock.symbol}</div>{" "}
-          <div>{stock.name}</div>{" "}
+          <div className=" whitespace-nowrap text-ellipsis overflow-hidden">{stock.name}</div>{" "}
         </h2>
         <p
           className={`${

@@ -1,7 +1,10 @@
 "use client";
+import Loading from "@/app/Loading";
+import Logout from "@/app/Logout";
 import { changeArrayWithRandomValue, IndianStocksArray } from "@/data/data";
 import { auth, retriveData } from "@/firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth/web-extension";
+import { AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -12,6 +15,8 @@ export default function GlobalProvider({ children }) {
   const [portfolioItems, setportfolioItems] = useState([]);
   const [watchListItems, setwatchListItems] = useState([]);
   const [theme, settheme] = useState("dark");
+  const [viewLogout, setviewLogout] = useState(false);
+  const [viewLoder, setviewLoder] = useState(false);
   const route = useRouter();
 
   useEffect(() => {
@@ -23,13 +28,26 @@ export default function GlobalProvider({ children }) {
     return () => clearInterval(interval);
   }, []);
 
+  const retriveName = async (uid) => {
+    const res = await retriveData(uid, "username");
+    if (!res) {
+      return "";
+    }
+    return res.username;
+  };
+
   const checkLoginStatus = () => {
     try {
-      onAuthStateChanged(auth, (firebaseuser) => {
+      onAuthStateChanged(auth, async (firebaseuser) => {
         if (firebaseuser) {
+          const name = await retriveName(firebaseuser.uid);
+          if (name) {
+            return setuser({ ...firebaseuser, displayName: name });
+          }
           return setuser(firebaseuser);
+        } else {
+          return route.push("/login");
         }
-        return route.push("/login");
       });
     } catch (error) {
       toast.error(error.message);
@@ -101,9 +119,16 @@ export default function GlobalProvider({ children }) {
         setwatchListItems,
         theme,
         settheme,
+        setviewLogout,
+        setviewLoder,
       }}
     >
-      <div data-theme={theme}>{children}</div>
+      <div data-theme={theme}>
+        {children}
+        <AnimatePresence>{viewLoder && <Loading />}</AnimatePresence>
+        <AnimatePresence>{viewLogout && <Logout />}</AnimatePresence>
+      </div>
+
       <ToastContainer />
     </Contexts.Provider>
   );

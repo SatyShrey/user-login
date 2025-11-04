@@ -2,28 +2,28 @@
 import { useValues } from "@/contexts/contexts";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import Header from "./Header";
 import Loading from "@/app/Loading";
 import { toast } from "react-toastify";
 import BuySell from "./BuySell";
 import Chart from "./Chart";
 import { saveData } from "@/firebase/firebase";
+import Header from "@/app/Header";
+import Footer from "@/app/Footer";
 
 function page() {
   const { id } = useParams();
-  const { indianStocksArray, user, setwatchListItems, watchListItems } =
+  const { indianStocksArray, user, setwatchListItems, watchListItems, setviewLoder } =
     useValues();
   const [stock, setstock] = useState(null);
-  const [loading, setloading] = useState(false);
   const [notfounderror, setnotfounderror] = useState("");
 
   const handleSetWatchlist = async () => {
     const find = watchListItems.find((item) => item.symbol == id);
     if (find) {
-      return toast("This stock is already in your watchlist");
+      return toast.error("This stock is already in your watchlist");
     }
     try {
-      setloading(true);
+      setviewLoder(true);
       const newDoc = indianStocksArray.find((item) => item.symbol == id);
       let updatedData = [...watchListItems, newDoc];
       await saveData(user.uid, "watchlist", { watchlist: updatedData });
@@ -32,7 +32,7 @@ function page() {
     } catch (err) {
       toast.error(err);
     } finally {
-      setloading(false);
+      setviewLoder(false);
     }
   };
 
@@ -88,7 +88,7 @@ function page() {
           <BuySell stock={stock} />
         </div>
       </div>
-      {loading && <Loading />}
+      <Footer/>
     </div>
   );
 }

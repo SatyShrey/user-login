@@ -18,7 +18,7 @@ const StockPriceCard = ({ stock }) => {
       >
         <h2>
           <div className="md:text-lg font-bold">{find.symbol}</div>{" "}
-          <div>{find.name}</div>{" "}
+          <div className=" whitespace-nowrap text-ellipsis overflow-hidden">{find.name}</div>{" "}
         </h2>
         <p
           className={`${

@@ -8,7 +8,7 @@ export default function Portfolio() {
   const investment = (portfolioItems = []) => {
     let value = 0;
     portfolioItems.map((item) => {
-      value = value + item.price * item.quantity;
+      value = value + (item.price * item.quantity);
     });
     return value;
   };
@@ -18,7 +18,7 @@ export default function Portfolio() {
     indianStocksArray.map((item) => {
       const find = portfolioItems.find((f) => f.symbol === item.symbol);
       if (find) {
-        value = value + item.price * find.quantity;
+        value = value + (item.price * find.quantity);
       }
     });
     return value;
@@ -80,7 +80,7 @@ export default function Portfolio() {
                 <div>
                   {" "}
                   <div className="font-bold">{item.symbol}</div>{" "}
-                  <div>{item.name}</div>
+                  <div className="whitespace-nowrap text-ellipsis overflow-hidden">{item.name}</div>
                   <div className="text-sm">Quantity: {item.quantity}</div>
                 </div>
                 <div>

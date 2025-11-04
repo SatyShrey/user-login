@@ -1,5 +1,12 @@
- const Tabs = ({ currentTab,setcurrentTab }) => {
+import { useState } from "react";
+import Portfolio from "./Portfolio";
+import Watchlist from "./Watchlist";
+import Markets from "./Markets";
+
+ const Tabs = () => {
+  const[currentTab,setcurrentTab]=useState('Portfolio');
     return (
+      <>
       <div className="grid grid-cols-3 gap-1">
         {["Portfolio", "Watchlist", "Markets"].map((item, index) => (
           <button onClick={()=>setcurrentTab(item)}
@@ -12,6 +19,10 @@
           </button>
         ))}
       </div>
+       {currentTab === "Portfolio" && <Portfolio />}
+      {currentTab === "Watchlist" && <Watchlist />}
+      {currentTab === "Markets" && <Markets />}
+      </>
     );
   };
   export default Tabs;
