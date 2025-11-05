@@ -1,16 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, DollarSign, IndianRupee, Wallet } from "lucide-react";
 import { GiGoldBar } from "react-icons/gi";
-import GoogleLogo from "./googlelogo";
-import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { auth, googleProvider, login } from "../../firebase/firebase";
-import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import { auth } from "../../firebase/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useValues } from "@/contexts/contexts";
+import Input from "../Input";
 
 const Icon = ({ Component, size = 30 }) => {
   return <Component size={size} />;
@@ -82,13 +81,14 @@ const SideSection = () => {
 };
 
 const LoginSection = () => {
-  const [inputType, setInputType] = useState("password");
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex = /^.{6,}$/;
   const route = useRouter();
-  const {setviewLoder,setuser} = useValues();
+  const { setviewLoder } = useValues();
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
 
   const login = async () => {
     if (!email) {
@@ -100,8 +100,7 @@ const LoginSection = () => {
     if (emailRegex.test(email) && passwordRegex.test(password)) {
       setviewLoder(true);
       try {
-        const res=await signInWithEmailAndPassword(auth, email, password);
-        setuser(res.user);
+        await signInWithEmailAndPassword(auth, email, password);
         toast.success("Login success");
         route.push("/");
       } catch (e) {
@@ -112,16 +111,14 @@ const LoginSection = () => {
     }
   };
 
-  const loginWithGoogle = async () => {
-    setviewLoder(true);
-    try {
-      await signInWithPopup(auth, googleProvider);
-      toast.success("Login success");
-      return route.push("/");
-    } catch (e) {
-      toast.error(e.message);
-    } finally {
-      setviewLoder(false);
+  const handleKeyDown = (e, nextRef) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (nextRef) {
+        nextRef.current.focus();
+      } else {
+        login();
+      }
     }
   };
 
@@ -130,56 +127,27 @@ const LoginSection = () => {
       <h3 className="font-semibold text-2xl mb-5">
         Welcome to <span className="font-bold">AssetsWallet</span>
       </h3>
-      <button
-        onClick={loginWithGoogle}
-        className="flex gap-1 shadow mx-auto items-center px-2 h-12 bg-white rounded hover:scale-105 active:scale-95 hover:bg-white/80 duration-300 cursor-pointer"
-      >
-        <span>
-          <GoogleLogo size={32} />
-        </span>
-        <span>Continue with Google</span>
-      </button>
-      <div className="my-5">Or</div>
-      {/*............email input div...........*/}
-      <div className="focus-within:[&>span]:w-60 w-fit mx-auto">
-        <input
-          type="email"
-          className="border-b border-b-gray-400 w-60 outline-0"
-          placeholder="Enter email address"
-          onChange={(e) => setemail(e.target.value)}
-        />
-        <span className="w-0 border-t-2 border-t-primary block duration-300 mx-auto" />
-        <div className="text-red-500 h-7">
-          {email && !emailRegex.test(email) && "Enter a valid email address"}
-        </div>
-      </div>
-      {/*............password input div...........*/}
-      <div className="focus-within:[&>span]:w-60 w-fit mx-auto relative">
-        <input
-          type={inputType}
-          className="border-b border-b-gray-400 w-60 outline-0"
-          placeholder="Enter Password"
-          onChange={(e) => setpassword(e.target.value)}
-        />
-        <span className="w-0 border-t-2 border-t-primary block duration-300 mx-auto" />
-        <div className="text-red-500 h-7">
-          {password &&
-            !passwordRegex.test(password) &&
-            "Enter at least six characters"}
-        </div>
-        {password && (
-          <button
-            className="absolute top-1 right-1 cursor-pointer"
-            onClick={() => {
-              setInputType((prev) =>
-                prev === "password" ? "text" : "password"
-              );
-            }}
-          >
-            {inputType === "text" ? <BsEyeSlash /> : <BsEye />}
-          </button>
-        )}
-      </div>
+      <Input
+        value={email}
+        setValue={setemail}
+        ref={emailRef}
+        regEx={emailRegex}
+        nextRef={passwordRef}
+        placeholder="Email"
+        type="email"
+        error="Please enter a valid email"
+      />
+
+      <Input
+        value={password}
+        setValue={setpassword}
+        ref={passwordRef}
+        regEx={passwordRegex}
+        placeholder="Password"
+        type="password"
+        error="Enter at least six characters"
+        onSubmit={login}
+      />
       {/*............Login button...........*/}
       <button onClick={login} className="btn btn-primary w-60">
         Login

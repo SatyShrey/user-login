@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, DollarSign, IndianRupee, Wallet } from "lucide-react";
 import { GiGoldBar } from "react-icons/gi";
@@ -14,6 +14,7 @@ import {
 } from "firebase/auth";
 import Loading from "../Loading";
 import { useValues } from "@/contexts/contexts";
+import Input from "../Input";
 
 const Icon = ({ Component, size = 30 }) => {
   return <Component size={size} />;
@@ -85,14 +86,15 @@ const SideSection = () => {
 };
 
 const SignupSection = ({ setloading }) => {
-  const [inputType, setInputType] = useState("password");
-  const [inputType2, setInputType2] = useState("password");
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const [confirmpassword, setconfirmpassword] = useState("");
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const passwordRegex = /^.{6,}$/;
   const route = useRouter();
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const confirmPasswordRef = useRef(null);
 
   const signup = async () => {
     if (!email) {
@@ -126,92 +128,54 @@ const SignupSection = ({ setloading }) => {
     <div className="w-full bg-gray-200 text-gray-800 text-center p-5">
       <h3 className="font-semibold text-2xl mb-5">New User Registration</h3>
 
-      {/*............email input div...........*/}
-      <div className="focus-within:[&>span]:w-60 w-fit mx-auto">
-        <input
-          type="email"
-          className="border-b border-b-gray-400 w-60 outline-0"
-          placeholder="Enter email address"
-          onChange={(e) => setemail(e.target.value)}
-        />
-        <span className="w-0 border-t-2 border-t-primary duration-300 mx-auto block" />
-        <div className="text-red-500 h-7">
-          {email && !emailRegex.test(email) && "Enter a valid email address"}
-        </div>
-      </div>
-      {/*............password input div...........*/}
-      <div className="focus-within:[&>span]:w-60 w-fit mx-auto relative">
-        <input
-          type={inputType}
-          className="border-b border-b-gray-400 w-60 outline-0"
-          placeholder="Enter Password"
-          onChange={(e) => setpassword(e.target.value)}
-        />
-        <span className="w-0 border-t-2 border-t-primary duration-300 mx-auto block" />
-        <div className="text-red-500 h-7">
-          {password &&
-            !passwordRegex.test(password) &&
-            "Enter at least six characters"}
-        </div>
-        {password && (
-          <button
-            className="absolute top-1 right-1 cursor-pointer"
-            onClick={() => {
-              setInputType((prev) =>
-                prev === "password" ? "text" : "password"
-              );
-            }}
-          >
-            {inputType === "text" ? <BsEyeSlash /> : <BsEye />}
-          </button>
-        )}
-      </div>
-      {/*............confirm password input div...........*/}
-      <div className="focus-within:[&>span]:w-60 w-fit mx-auto relative">
-        <input
-          type={inputType2}
-          className="border-b border-b-gray-400 w-60 outline-0"
-          placeholder="Confirm Password"
-          onChange={(e) => setconfirmpassword(e.target.value)}
-        />
-        <span className="w-0 border-t-2 border-t-primary duration-300 mx-auto block" />
-        <div className="text-red-500 h-7">
-          {confirmpassword &&
-            password &&
-            passwordRegex.test(password) &&
-            !(password === confirmpassword) &&
-            "Please enter the same password"}
-        </div>
-        {confirmpassword && (
-          <button
-            className="absolute top-1 right-1 cursor-pointer"
-            onClick={() => {
-              setInputType2((prev) =>
-                prev === "password" ? "text" : "password"
-              );
-            }}
-          >
-            {inputType2 === "text" ? <BsEyeSlash /> : <BsEye />}
-          </button>
-        )}
-      </div>
+      <Input
+        value={email}
+        setValue={setemail}
+        ref={emailRef}
+        regEx={emailRegex}
+        nextRef={passwordRef}
+        placeholder="Email"
+        type="email"
+        error="Please enter a valid email"
+      />
+
+      <Input
+        value={password}
+        setValue={setpassword}
+        ref={passwordRef}
+        regEx={passwordRegex}
+        nextRef={confirmPasswordRef}
+        placeholder="Password"
+        type="password"
+        error="Enter at least six characters"
+      />
+      <Input
+        value={confirmpassword}
+        setValue={setconfirmpassword}
+        ref={confirmPasswordRef}
+        regEx={new RegExp(`^${password}$`)}
+        placeholder="Confirm password"
+        type="password"
+        error="Enter the same password"
+        onSubmit={signup}
+      />
       {/*............signup button...........*/}
       <button onClick={signup} className="btn btn-primary w-60">
         Signup
       </button>
-      <div
+      <button
         onClick={() => route.back()}
-        className="text-blue-600 mt-5 cursor-pointer"
+        className="text-blue-600 mt-5 cursor-pointer block mx-auto"
       >
         <ArrowLeft size={15} className="inline" />{" "}
         <span className="hover:underline">Back</span>{" "}
-      </div>
+      </button>
     </div>
   );
 };
 
 function page() {
-  const {setviewLoder} = useValues();
+  const { setviewLoder } = useValues();
   return (
     <div className="min-h-screen overflow-y-scroll bg-gray-900 flex justify-center flex-col gap-5 items-center bar-0 px-1 sm:px-3">
       <Header />

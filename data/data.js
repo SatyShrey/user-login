@@ -1,41 +1,4 @@
-export const indianStocks = [];
-
-export const FnO = [];
-
-export const FDs = [];
-
-export const portfolioItemsDemo = [
-  {
-    name: "Reliance Industries Ltd.",
-    symbol: "RELIANCE",
-    price: 1486.9,
-    quantity: 2,
-  },
-  { name: "HDFC Bank Ltd.", symbol: "HDFCBANK", price: 1003.55, quantity: 2 },
-  {
-    name: "Bharti Airtel Ltd.",
-    symbol: "BHARTIARTL",
-    price: 2090.2,
-    quantity: 3,
-  },
-  {
-    name: "Tata Consultancy Services Ltd.",
-    symbol: "TCS",
-    price: 3057.9,
-    quantity: 1,
-  },
-  { name: "ICICI Bank Ltd.", symbol: "ICICIBANK", price: 1363.1, quantity: 5 },
-];
-
 export const listItems = ["Stocks", "F&O", "FDs", "Mutual Funds"];
-
-export const watchListItemsDemo = [
- "KOTAKBANK","HINDUNILVR",
-  "MARUTI",
-  "ASIANPAINT",
-  "ULTRACEMCO",
- "TITAN",
-];
 
 export const IndianStocksArray = [
   { name: "Reliance Industries Ltd.", symbol: "RELIANCE", price: 1486.9 },

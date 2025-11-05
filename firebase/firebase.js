@@ -22,6 +22,7 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
+
 export const saveData = async (uid,folder, data) => {
   await setDoc(doc(db, folder, uid), data, { merge: true });
 };
