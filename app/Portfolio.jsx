@@ -2,34 +2,6 @@ import { useValues } from "@/contexts/contexts";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-const StockCard = ({ item }) => {
-  return (
-    <Link
-      href={`/stock-data/${item.symbol}`}
-      className="grid grid-cols-3 text-center not-sm:text-sm bg-gray-950 p-2 rounded-lg cursor-pointer hover:bg-black duration-300 active:scale-95 items-center"
-    >
-      <div>
-        {" "}
-        <div className="font-bold">{item.symbol}</div>{" "}
-        <div className="whitespace-nowrap text-ellipsis overflow-hidden">
-          {item.name}
-        </div>
-        <div className="text-sm">Quantity: {item.quantity}</div>
-      </div>
-      <div>
-        Invested <div>₹{(item.price * item.quantity).toFixed(2)}</div>{" "}
-      </div>
-      <div>
-        ROI{" "}
-        <div className={`${roi([item]) > 0 ? "text-success" : "text-error"}`}>
-          {roi([item]) < 0 && "-"}₹
-          {roi([item]).toFixed(2).toString().replace("-", "")}
-        </div>
-      </div>
-    </Link>
-  );
-};
-
 export default function Portfolio() {
   const { indianStocksArray, portfolioItems } = useValues();
 
@@ -54,6 +26,34 @@ export default function Portfolio() {
 
   const roi = (portfolioItems = []) => {
     return currentvalue(portfolioItems) - investment(portfolioItems);
+  };
+
+  const StockCard = ({ item }) => {
+    return (
+      <Link
+        href={`/stock-data/${item.symbol}`}
+        className="grid grid-cols-3 text-center not-sm:text-sm bg-gray-950 p-2 rounded-lg cursor-pointer hover:bg-black duration-300 active:scale-95 items-center"
+      >
+        <div>
+          {" "}
+          <div className="font-bold">{item.symbol}</div>{" "}
+          <div className="whitespace-nowrap text-ellipsis overflow-hidden">
+            {item.name}
+          </div>
+          <div className="text-sm">Quantity: {item.quantity}</div>
+        </div>
+        <div>
+          Invested <div>₹{(item.price * item.quantity).toFixed(2)}</div>{" "}
+        </div>
+        <div>
+          ROI{" "}
+          <div className={`${roi([item]) > 0 ? "text-success" : "text-error"}`}>
+            {roi([item]) < 0 && "-"}₹
+            {roi([item]).toFixed(2).toString().replace("-", "")}
+          </div>
+        </div>
+      </Link>
+    );
   };
 
   return (
