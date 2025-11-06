@@ -13,7 +13,7 @@ import Markets from "./Markets";
             key={index}
             className={`${
               currentTab === item ? "bg-primary" : "bg-primary/50 text-base-content/50"
-            } rounded-tr-lg rounded-tl-lg py-2 sm:text-xl cursor-pointer duration-300`}
+            } rounded-tr-lg rounded-tl-lg py-2 sm:text-xl cursor-pointer`}
           >
             {item}
           </button>

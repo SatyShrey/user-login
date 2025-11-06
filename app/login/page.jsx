@@ -102,22 +102,11 @@ const LoginSection = () => {
       try {
         await signInWithEmailAndPassword(auth, email, password);
         toast.success("Login success");
-        route.push("/");
+        route.replace("/");
       } catch (e) {
         toast.error(e.message);
       } finally {
         setviewLoder(false);
-      }
-    }
-  };
-
-  const handleKeyDown = (e, nextRef) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (nextRef) {
-        nextRef.current.focus();
-      } else {
-        login();
       }
     }
   };
