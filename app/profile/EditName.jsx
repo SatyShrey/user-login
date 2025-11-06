@@ -16,7 +16,7 @@ function EditName({ oncloseClick }) {
     try {
       await saveData(user.uid, "username", { username: name });
       setuser((user) => ({ ...user, displayName: name }));
-      toast.success("Name updated successfully");
+      toast.success("Name updated successfully");oncloseClick();
     } catch (error) {
       toast.error(error.message);
     } finally {

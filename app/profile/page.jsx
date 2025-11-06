@@ -13,7 +13,7 @@ import { motion } from "framer-motion";
 import Footer from "../Footer";
 
 function Profile() {
-  const { setuser, user, setviewLogout, settheme, theme } = useValues();
+  const { user, setviewLogout, settheme, theme } = useValues();
   const [viewEdit, setviewEdit] = useState(false);
 
   if (!user) {
@@ -34,19 +34,34 @@ function Profile() {
     <div className="min-h-screen">
       <Header />
       <div className="p-4 w-xl max-w-full mx-auto my-2 bg-primary flex flex-col items-center">
-        {user.photoURL ? (
-          <img
-            src={user.photoURL}
-            alt="profile-pic"
-            className="bg-accent rounded-full w-24 h-24"
-          />
-        ) : (
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -30 }}
+          transition={{ duration: 0.6 }}
+          className="border-2 rounded-full p-4"
+        >
           <User size={50} />
-        )}
+        </motion.div>
         {user.displayName && (
-          <p className="text-2xl font-semibold">{user.displayName}</p>
+          <motion.p
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 30 }}
+            transition={{ duration: 0.6 }}
+            className="text-2xl font-semibold"
+          >
+            {user.displayName}
+          </motion.p>
         )}
-        <p>{user.email}</p>
+        <motion.p
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -30 }}
+          transition={{ duration: 0.6 }}
+        >
+          {user.email}
+        </motion.p>
         <AnimatePresence>
           {viewEdit && (
             <motion.div
@@ -54,6 +69,7 @@ function Profile() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.6 }}
             >
               <EditName oncloseClick={() => setviewEdit(false)} />
             </motion.div>
@@ -67,29 +83,41 @@ function Profile() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.6 }}
             >
               <button
                 className="btn w-full mt-5"
                 onClick={() => setviewEdit(true)}
               >
-                {user.displayName ? "Edit name" : "Set username"}
+                {user.displayName ? "Edit Username" : "Set Username"}
               </button>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <button className="btn w-full mt-2" onClick={changeTheme}>
+        <motion.button
+          initial={{ opacity: 0, x: 30 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: 30 }}
+          transition={{ duration: 0.6 }}
+          className="btn w-full mt-2"
+          onClick={changeTheme}
+        >
           {theme == "dark" ? <Sun /> : <Moon />}
           Change Theme
-        </button>
-        <button
+        </motion.button>
+        <motion.button
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -30 }}
+          transition={{ duration: 0.6 }}
           className="btn btn-error w-full mt-2"
           onClick={() => setviewLogout(true)}
         >
           Logout
-        </button>
+        </motion.button>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 }

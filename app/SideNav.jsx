@@ -10,7 +10,7 @@ function SideNav({ onCloseClick }) {
       animate={{ x: 0 }}
       exit={{ x: "100%" }}
       transition={{ duration: 0.4 }}
-      className="fixed top-0 bottom-0 left-0 right-0 flex sm:hidden"
+      className="fixed top-0 bottom-0 left-0 right-0 flex sm:hidden z-10"
     >
       <div className="flex-1"></div>
       <div className="w-60 bg-primary shadow-[0_0_10px_black] flex flex-col">
