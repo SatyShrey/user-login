@@ -2,7 +2,7 @@
 
 import { useValues } from "@/contexts/contexts";
 import Loading from "../Loading";
-import { Moon, Sun, User } from "lucide-react";
+import { Moon, Pen, Sun, User } from "lucide-react";
 import Header from "../Header";
 import { saveData } from "@/firebase/firebase";
 import { toast } from "react-toastify";
@@ -33,35 +33,20 @@ function Profile() {
   return (
     <div className="min-h-screen">
       <Header />
-      <div className="p-4 w-xl max-w-full mx-auto my-2 bg-primary flex flex-col items-center">
-        <motion.div
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -30 }}
-          transition={{ duration: 0.6 }}
-          className="border-2 rounded-full p-4"
-        >
+      <motion.div
+        initial={{ opacity: 0, y: -40 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -40 }}
+        transition={{ duration: 0.6 }}
+        className="p-4 w-xl max-w-full mx-auto my-2 bg-primary flex flex-col items-center"
+      >
+        <div className="border-2 rounded-full p-4">
           <User size={50} />
-        </motion.div>
+        </div>
         {user.displayName && (
-          <motion.p
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 30 }}
-            transition={{ duration: 0.6 }}
-            className="text-2xl font-semibold"
-          >
-            {user.displayName}
-          </motion.p>
+          <p className="text-2xl font-semibold">{user.displayName}</p>
         )}
-        <motion.p
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -30 }}
-          transition={{ duration: 0.6 }}
-        >
-          {user.email}
-        </motion.p>
+        <p>{user.email}</p>
         <AnimatePresence>
           {viewEdit && (
             <motion.div
@@ -86,37 +71,26 @@ function Profile() {
               transition={{ duration: 0.6 }}
             >
               <button
-                className="btn w-full mt-5"
+                className=" btn w-full mt-5"
                 onClick={() => setviewEdit(true)}
-              >
+              ><Pen size={18}/>
                 {user.displayName ? "Edit Username" : "Set Username"}
               </button>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <motion.button
-          initial={{ opacity: 0, x: 30 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: 30 }}
-          transition={{ duration: 0.6 }}
-          className="btn w-full mt-2"
-          onClick={changeTheme}
-        >
+        <button className="btn w-full mt-2" onClick={changeTheme}>
           {theme == "dark" ? <Sun /> : <Moon />}
           Change Theme
-        </motion.button>
-        <motion.button
-          initial={{ opacity: 0, x: -30 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -30 }}
-          transition={{ duration: 0.6 }}
+        </button>
+        <button
           className="btn btn-error w-full mt-2"
           onClick={() => setviewLogout(true)}
         >
           Logout
-        </motion.button>
-      </div>
+        </button>
+      </motion.div>
       <Footer />
     </div>
   );
